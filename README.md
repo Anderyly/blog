@@ -8,9 +8,9 @@
     go build
 ```
 
-# Config
+# Configuration
 ```
-    config.yaml mysql info and redis info
+    Set MySQL and Redis information in config.yaml
 
 ```
 # Run
