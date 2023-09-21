@@ -1,0 +1,54 @@
+{{ define "default/footer" }}
+
+<footer id="zan-footer">
+    <section class="footer-space">
+        <div class="footer-space-line"></div>
+    </section>
+    <section class="zan-copyright">
+        <div class="container">
+            Powered by <a href="http://blog.aaayun.cc" title="采用轻风云系统" rel="nofollow">轻风云</a></div>
+    </section>
+</footer>
+<div id="zan-gotop">
+    <div class="gotop">
+        <i class="fa fa-chevron-up"></i>
+    </div>
+</div>
+<script type='text/javascript' src='//cdn.staticfile.org/jquery/2.2.4/jquery.min.js'></script>
+<script type='text/javascript' src='//cdn.staticfile.org/jquery-migrate/1.4.1/jquery-migrate.min.js'></script>
+<script type="text/javascript" src="/include/lib/js/common_tpl.js"></script>
+<script type='text/javascript' src='//cdn.staticfile.org/twitter-bootstrap/3.1.1/js/bootstrap.min.js'></script>
+<script type='text/javascript' src='//cdn.staticfile.org/flexslider/2.7.0/jquery.flexslider.min.js'></script>
+<script type='text/javascript' src='/static/templates/default/js/zan.js?ver=3.0.2'></script>
+<!--[if lt IE 9]>
+<script src="/static/templates/default/js/modernizr.js"></script>
+<script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+<script src="//cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+<![endif]-->
+
+<script type='text/javascript'>
+    backTop = function (btnId) {
+        var btn = document.getElementById(btnId);
+        var d = document.documentElement;
+        var b = document.body;
+        window.onscroll = set;
+        btn.onclick = function () {
+            btn.style.display = "none";
+            window.onscroll = null;
+            this.timer = setInterval(function () {
+                d.scrollTop -= Math.ceil((d.scrollTop + b.scrollTop) * 0.1);
+                b.scrollTop -= Math.ceil((d.scrollTop + b.scrollTop) * 0.1);
+                if ((d.scrollTop + b.scrollTop) == 0) clearInterval(btn.timer, window.onscroll = set);
+            }, 10);
+        };
+
+        function set() {
+            btn.style.display = (d.scrollTop + b.scrollTop > 100) ? 'block' : "none"
+        }
+    };
+    backTop('zan-gotop');
+</script>
+</body>
+</html>
+
+{{ end }}

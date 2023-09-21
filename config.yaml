@@ -1,0 +1,19 @@
+# config.yaml
+
+key: #@!^5ebcQJx2Lz6mysqlNiNHW^!@#
+
+sql:
+  type: mysql
+  localhost: 127.0.0.1
+  port: 3306
+  user: root
+  password: root
+  database: blog
+
+redis:
+  addr: "127.0.0.1:6379"
+  password:
+  db: 1
+  pool_size: 10
+  idle_timeout: 1m
+

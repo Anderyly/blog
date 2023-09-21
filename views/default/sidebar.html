@@ -1,0 +1,115 @@
+{{ define "default/sidebar" }}
+
+{{ $user := GetUser }}
+
+<aside class="col-md-4" id="sidebar">
+
+    <aside id="zan_author-4">
+        <div class="zan-author text-center hidden-xs">
+            <div class="author-top"></div>
+            <div class="author-bottom">
+                <img src="{{ GetAvatar $user.Mail }}" class="avatar avatar-120 photo" height="120" width="120">
+                <div class="author-content">
+                    <span class="author-name">
+                        <a href="{{ GetAuthorLink $user.Account }}" class="upp" title="{{ $user.Mail }}">{{ $user.Nickname }}</a></span>
+                    <span class="author-social">
+              <div class="btn-group btn-group-justified">
+                <a class="btn btn-zan-solid-wi" target="_blank" href="http://github.com/{{ $user.Account }}"><i class="fa fa-weibo"></i> Github</a>
+                <a class="btn btn-zan-solid-wi" target="_blank" href="http://gitee.com/{{ $user.Account }}"><i class="fa fa-tencent-weibo"></i> Gitee</a>
+              </div>
+            </span>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+    <aside id="zan_search-5">
+        <form method="get" id="searchform" class="form-inline clearfix hidden-xs" action="/">
+            <input class="form-control" type="text" name="s" id="s" placeholder="搜索关键词..." value="{{ .keywords }}">
+            <button class="btn btn-zan-solid-pi btn-small"><i class="fa fa-search"></i> 查找</button>
+        </form>
+    </aside>
+
+    <aside id="zan_posts_category-1">
+        <div class="panel panel-zan hidden-xs">
+            <div class="panel-heading">分类</div>
+            <div class="list-group zan-category">
+                {{ range $k,$v := ListCategory }}
+                <a href="{{ GetCategoryLink $v.Slug }}">{{ $v.Name }}({{ $v.Count }})</a>
+                {{end}}
+            </div>
+        </div>
+    </aside>
+    <aside id="zan_hotest_posts-2">
+        <div class="panel panel-zan hidden-xs">
+            <div class="panel-heading">最新文章</div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    {{ range $k,$v := ListContentsNew 5 }}
+                    <li class="zan-list clearfix">
+                        <a href="{{ GetArchivesLink $v.Slug }}" title="{{ $v.Title }}">{{ $v.Title }}</a>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <aside id="zan_hotest_posts-3">
+        <div class="panel panel-zan hidden-xs">
+            <div class="panel-heading">热门文章</div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    {{ range $k,$v := ListContentsHot 5 }}
+                    <li class="zan-list clearfix">
+                        <a href="{{ GetArchivesLink $v.Slug }}" title="{{ $v.Title }}">{{ $v.Title }}</a>
+                    </li>
+                    {{end}}
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <aside id="zan_latest_comments-4">
+        <div class="panel panel-zan hidden-xs">
+            <div class="panel-heading">最新评论</div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    {{ range $k,$v := ListCommentsNew 10 }}
+                    <li class="zan-list clearfix">
+                        <div class="sidebar-avatar">
+                            <img src="{{ GetAvatar $v.Mail }}" class="avatar avatar-75 photo" height="75" width="75">
+                        </div>
+                        <h6>发表于：<a href="{{ GetArchivesLink $v.Slug }}">{{ $v.ContentTitle }}</a></h6>
+                        <div class="sidebar-comment">
+                            <a href="{{ GetArchivesLink $v.Slug }}#{{ $v.Coid }}">{{ GetAbstract $v.Text 200 }}</a>
+                        </div>
+                    </li>
+                    {{ end }}
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <aside id="zan_posts_category-`">
+        <div class="panel panel-zan hidden-xs">
+            <div class="panel-heading">友链</div>
+            <div class="list-group zan-category">
+                {{ range $k, $v := ListLinks }}
+                <a href="{{ $v.Link }}" target="_blank" title="{{ $v.Description }}"><img src="{{ $v.Image }}" height="16px">&nbsp;{{ $v.Title }}</a>
+                {{ end }}
+            </div>
+        </div>
+    </aside>
+    <aside id="zan_latest_comments-4">
+        <div class="panel panel-zan hidden-xs">
+            <div class="panel-heading">站点统计</div>
+            <div id="list-total">
+                <li>文章总数：{{ GetContentsCount 1 }}篇</li>
+                <li>微语总数：43条</li>
+                <li>评论总数：{{ GetCommentCount }}条</li>
+                <li>网站运行：3252天</li>
+            </div>
+        </div>
+    </aside>
+</aside>
+
+{{ end }}

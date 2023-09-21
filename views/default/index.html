@@ -1,0 +1,108 @@
+{{ define "default/index" }}
+
+{{ template "default/header" .}}
+
+{{ $user := GetUser }}
+
+{{ $templates := GetTemplateConfig }}
+
+<section id="zan-bodyer">
+    <div class="container">
+        <section class="row">
+            <section class="col-md-8" id="mainstay">
+                <div class="top_box">
+                    <div class="top_post">
+                        <div class="title">公 告</div>
+                        <article class="ulist">
+                            <h2>
+                                <i class="icon-eject icon-large"></i>{{ $templates.notice }}
+                            </h2>
+                        </article>
+                    </div>
+                </div>
+
+                {{ if .contents }}
+                {{ range $k,$v := .contents }}
+                <div class="article zan-post clearfix">
+                    <i class="fa fa-bookmark article-stick"></i>
+                    <!-- PC端设备文章显示 -->
+                    <section class="visible-md visible-lg">
+                        <span class="label label-zan">
+                            <a href="/category/{{ $v.Category.Slug }}" rel="category tag">{{ $v.Category.Name }}</a>
+	                    </span>
+                        <h3>
+                            <a href="{{ GetArchivesLink $v.Slug }}">{{ $v.Title }}</a>
+                        </h3>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-5">
+                                <figure class="thumbnail zan-thumb">
+                                    <a href="{{ GetArchivesLink $v.Slug }}">
+                                        <img src="{{ Cover $v.Text }}" class="attachment-300x180 wp-post-image" alt=""
+                                             id="imgcache">
+                                    </a>
+                                </figure>
+                            </div>
+                            <div class="col-md-7 visible-lg zan-outline">{{ GetAbstract $v.Text 300 }}</div>
+                            <div class="col-md-7 visible-md zan-outline">{{ GetAbstract $v.Text 200 }}</div>
+                        </div>
+                        <hr>
+                        <div class="pull-right post-info">
+                            <span><i class="fa fa-calendar"></i> {{ DateFormat $v.CreatedAt `01月02日,2006` }}</span>
+                            <span>
+                                <i class="fa fa-user"></i>
+                                <a href="{{ GetAuthorLink $user.Account }}" class="upp" title="{{ $v.User.Mail }}">{{ $v.User.Nickname }}</a>
+                            </span>
+                            <span><i class="fa fa-eye"></i> {{ $v.ViewsNum }}</span>
+                            <span><i class="fa fa-comment"></i> {{ $v.CommentsNum }}条评论</span>
+                        </div>
+                    </section>
+                    <!-- PC端设备文章显示结束 -->
+                    <!-- 移动端设备文章显示 -->
+                    <section class="visible-xs  visible-sm">
+                        <div class="title-article">
+                            <h4><a href="{{ GetArchivesLink $v.Slug }}">{{ $v.Title }}</a></h4>
+                        </div>
+                        <p class="post-info">
+                            <span><i class="fa fa-calendar"></i> {{ DateFormat $v.CreatedAt `01月02日,2006` }}</span>
+                            <span><i class="fa fa-eye"></i> {{ $v.ViewsNum }}人</span>
+                        </p>
+                        <div class="content-article">
+                            <figure class="thumbnail">
+                                <a href="{{ GetArchivesLink $v.Slug }}">
+                                    <img src="{{ Cover $v.Text }}" class="attachment-750x450 wp-post-image" alt="" width="750" height="450">
+                                </a>
+                            </figure>
+                            <div class="well">{{ GetAbstract $v.Text 150 }}</div>
+                        </div>
+                        <a class="btn btn-zan-line-pp btn-block" href="{{ GetArchivesLink $v.Slug }}" title="详细阅读">阅读全文
+                            <span class="badge">{{ $v.CommentsNum }}</span>
+                        </a>
+                    </section>
+                    <!-- 移动端设备文章显示结束 -->
+                </div>
+                {{ end }}
+                <!-- 分页 -->
+                <div id="zan-page" class="clearfix">
+                    <ul class="pagination pagination-zan pull-right">
+                        {{ range $k, $v := .pages }}
+                        <a href="{{ GetPageLink $v }}">{{ $v }}</a>
+                        {{ end }}
+                </div>
+                <!-- 分页结束 -->
+                {{ else }}
+                <h2>未找到</h2>
+                <p>抱歉，没有符合您查询条件的结果。</p>
+                {{ end }}
+
+            </section>
+
+            {{ template "default/sidebar" .}}
+
+        </section>
+    </div>
+</section>
+
+{{ template "default/footer" .}}
+
+{{ end }}

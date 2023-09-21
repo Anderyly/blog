@@ -1,0 +1,110 @@
+{{ define "default/archives" }}
+
+{{ template "default/header" .}}
+
+{{ $user := GetUser }}
+
+<div id="zan-bodyer">
+    <div class="container">
+        <section class="row">
+            <div class="col-md-8">
+                <!-- 广告 -->
+                <!-- 广告结束 -->
+                <article class="zan-article">
+                    <!-- 面包屑 -->
+                    <div class="breadcrumb">
+                        <i class="fa fa-map-marker"></i> <!-- Breadcrumb NavXT 5.1.0 -->
+                        <a title="Go to index." href="/" class="home">首页</a> / {{ .contents.Title }}
+                    </div>
+                    <!-- 面包屑结束 -->
+                    <!-- 大型设备文章显示 -->
+                    <div class="hidden-xs">
+                        <h1><a href="{{ GetArchivesLink .contents.Slug }}">{{ .contents.Title }} </a></h1>
+                        <p class="post-big-info">
+                            <span class="label label-zan"><i class="fa fa-calendar"></i> {{ DateFormat .contents.CreatedAt `2006-01-02 15:04` }}</span>
+                            <span class="label label-zan"><i class="fa fa-tags"></i>
+                                <a href="{{ GetCategoryLink .contents.Category.Slug }}" rel="category tag">{{ .contents.Category.Name }}</a>
+                            </span>
+                            <span class="label label-zan"><i class="fa fa-user"></i>
+                                <a href="{{ GetAuthorLink $user.Account }}" class="upp" title=" net909@163.com">{{ .contents.User.Nickname }}</a>
+                            </span>
+                            <span class="label label-zan"><i class="fa fa-eye"></i> {{ .contents.ViewsNum }}人</span>
+                        </p>
+                    </div>
+                    <!-- 大型设备文章显示结束 -->
+                    <!-- 小型设备文章显示 -->
+                    <div class="visible-xs">
+                        <div class="title-article">
+                            <h4><a href="{{ GetArchivesLink .contents.Slug }}">{{ .contents.Title }}</a></h4>
+                        </div>
+                        <p class="post-info">
+                            <span><i class="fa fa-calendar"></i> {{ DateFormat .contents.CreatedAt `2006-01-02 15:04` }}</span>
+                            <span><i class="fa fa-eye"></i> {{ .contents.ViewsNum }}人</span>
+                        </p>
+                    </div>
+                    <!-- 小型设备文章显示结束 -->
+                    <article class="zan-single-content" id="article"></article>
+                    <script>
+                        const htmlString = "{{ .contents.Text }}";
+                        document.getElementById("article").innerHTML = htmlString;
+                    </script>
+                    <!-- 百度分享 -->
+                    <div class="zan-share clearfix">
+                        <div class="article-tags">继续浏览有关
+                            {{ range $k,$v := .contents.Tags }}
+                            <a href="{{ GetTagLink $v.Slug }}" class="tag">{{ $v.Slug }}</a>
+                            {{ end }}
+                            的文章
+                        </div>
+                        <link href="/content/plugins/share_view/style.css" type="text/css" rel="stylesheet">
+                    </div>
+                    <!-- 百度分享结束 -->
+                    <!-- 文章版权信息 -->
+                    <div class="copyright well">
+                        <p>
+                            版权属于:
+                            <a href="/" title="{{ .siteConf.Title }}">{{ .siteConf.Title }}</a></p>
+                        <p>
+                            原文地址:
+                            <a href="{{ GetArchivesLink .contents.Slug }}">{{ GetArchivesLink .contents.Slug }}</a></p>
+                        <p>转载时必须以链接形式注明原始出处及本声明。</p>
+                    </div>
+                    <!-- 文章版权信息结束 -->
+                    <!-- 分页 -->
+                    <div clas="zan-page">
+                        <ul class="pager">
+                            {{ $lastContents := GetLastContents .contents.Cid }}
+                            {{ if $lastContents }}
+                            <li class="previous">
+                                <a href="{{ GetArchivesLink $lastContents.Slug }}" title="{{ $lastContents.Title }}">上一篇</a>
+                            </li>
+                            {{ end }}
+                            {{ $nextContents := GetNextContents .contents.Cid }}
+                            {{ if $nextContents }}
+                            <li class="next">
+                                <a href="{{ GetArchivesLink $nextContents.Slug }}" title="{{ $nextContents.Title }}">下一篇</a>
+                            </li>
+                            {{ end }}
+                        </ul>
+                    </div>
+                    <!-- 分页结束 -->
+                </article>
+                <!-- 广告 -->
+                <!-- 广告结束 -->
+                <div class="hidden-xs" id="post-related">
+                    <div id="related-title"><i class="fa fa-share-alt"></i> 相关推荐</div>
+                    <ul>
+                        {{ range $k, $v := ListContentsRecommend .contents.Cid .contents.Tags 8 }}
+                        <li><a href="{{ GetArchivesLink $v.Slug }}">{{ $v.Title }}</a></li>
+                        {{ end }}
+                    </ul>
+                </div>
+            </div>
+
+            {{ template "default/sidebar" }}
+        </section>
+    </div>
+
+    {{ template "default/footer" .}}
+
+    {{ end }}
