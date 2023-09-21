@@ -8,7 +8,6 @@
 package lib
 
 import (
-	"blog/ay"
 	"crypto/md5"
 	"encoding/base64"
 	"encoding/hex"
@@ -28,7 +27,7 @@ type Str interface {
 	Md5(str string) string
 	AuthCode(str string, operation bool, key string, expiry int64) (string, error) // false is decode
 	MakeCoupon(coupon string) (float64, error)                                     //
-	Summary(content string, count int) string
+	Summary(content string, count int) (string, error)
 }
 
 type str struct {
@@ -72,9 +71,9 @@ func (con *str) AuthCode(str string, operation bool, key string, expiry int64) (
 		err = errors.New("decode length less than 11")
 		return
 	}
-	if key == "" {
-		key = ay.Yaml.GetString("key")
-	}
+	// if key == "" {
+	// 	key = ay.Yaml.GetString("key")
+	// }
 	key = con.Md5(key)
 
 	keyA := con.Md5(key[:16])
@@ -184,14 +183,18 @@ func (con *str) MakeCoupon(coupon string) (amount float64, err error) {
 }
 
 // Summary 过滤特殊字符
-func (con *str) Summary(content string, count int) string {
+func (con *str) Summary(content string, count int) (string, error) {
 
 	content = strings.Replace(content, `@<script(.*?)</script>@is`, "", -1)
 	content = strings.Replace(content, `@<iframe(.*?)</iframe>@is`, "", -1)
 	content = strings.Replace(content, `@<style(.*?)</style>@is`, "", -1)
 	content = strings.Replace(content, `\`, "", -1)
 
-	re, _ := regexp.Compile("\\<[\\S\\s]+?\\>")
+	re, err := regexp.Compile(`\\<[\\S\\s]+?\\>`)
+	if err != nil {
+		return "", err
+	}
+
 	content = re.ReplaceAllString(content, "")
 
 	content = strings.Replace(content, " ", "", -1)
@@ -201,5 +204,5 @@ func (con *str) Summary(content string, count int) string {
 	content = strings.Replace(content, "\n", "", -1)
 	cont := []rune(content)
 
-	return string(cont[:count])
+	return string(cont[:count]), nil
 }

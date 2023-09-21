@@ -91,13 +91,17 @@ func (con *upload) Get(file *multipart.FileHeader) (bool, string) {
 
 	for {
 		n, err := data.Read(context)
-		filePath.Write(context[:n])
 		if err != nil {
 			if err == io.EOF {
 				return false, fileDir + fileName + fileExt
 			} else {
 				return false, err.Error()
 			}
+		}
+		_, err = filePath.Write(context[:n])
+
+		if err != nil {
+			return false, err.Error()
 		}
 	}
 

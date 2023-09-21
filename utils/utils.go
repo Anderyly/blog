@@ -9,9 +9,10 @@ package utils
 
 import (
 	"fmt"
-	"golang.org/x/net/html"
 	"html/template"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 func SliceUnique[T any](list []T) []T {

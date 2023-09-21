@@ -29,10 +29,7 @@ func NewFile() File {
 
 func (con *file) IsFile(filename string) bool {
 	_, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		return false
-	}
-	return true
+	return !os.IsNotExist(err)
 }
 
 func (con *file) Write(filename string, data []byte, perm os.FileMode) error {

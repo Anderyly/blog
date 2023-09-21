@@ -8,9 +8,11 @@
 package ay
 
 import (
+	"blog/ay/lib"
+	"log"
+
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
-	"log"
 )
 
 func InitConfig() {
@@ -18,15 +20,17 @@ func InitConfig() {
 }
 
 func getConfig() *viper.Viper {
-	config := viper.New()
-	config.SetConfigName("config")
-	config.AddConfigPath(".")
-	config.SetConfigType("yaml")
-	err := config.ReadInConfig()
+	dir := lib.NewDir()
+	filePath, err := dir.LReadName("config.yaml", 3)
+	if err != nil {
+		log.Printf(err.Error())
+	}
+	viper.SetConfigFile(filePath)
+	err = viper.ReadInConfig()
 	if err != nil {
 		log.Printf("Failed to get the configuration.")
 	}
-	return config
+	return viper.GetViper()
 }
 
 func WatchConf() {

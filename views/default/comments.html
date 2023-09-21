@@ -1,17 +1,193 @@
-<!--
-  ~ @Author anderyly
-  ~ @email admin@aaayun.cc
-  ~ @link http://blog.aaayun.cc/
-  ~ @copyright Copyright (c) 2023
-  -->
+{{ define "default/comments" }}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<div id="comments-template">
+  <div class="comments-wrap">
+    <div id="comment-place">
+      <div class="comment-post" id="comment-post">
+        <h3 id="reply-title" class="comment-reply-title"><i class="fa fa-pencil"></i> 欢迎留言 <small><a
+              name="respond"></a><span class="cancel-reply" id="cancel-reply" style="display:none"><a
+                href="javascript:void(0);" onclick="cancelReply()" id="cancel-comment-reply-link">取消</a></span></small>
+        </h3>
+        <form action="/index.php?action=addcom" method="post" id="commentform" class="comment-form">
+          <div id="commentform-error" class="alert hidden"></div>
+          <div class="input-group"><span class="input-group-addon"><i class="fa fa-user"></i></span><input type="text"
+              name="comname" id="author" placeholder="* 昵称" value="" required=""></div>
+          <div class="input-group"><span class="input-group-addon"><i class="fa fa-envelope-o"></i></span><input
+              type="text" name="commail" id="email" placeholder="邮箱（选填）" value=""></div>
+          <textarea id="comment" placeholder="赶快发表你的见解吧！" name="comment" cols="45" rows="8" aria-required="true"
+            required=""></textarea>
+          <p class="form-submit">
+            <style type="text/css">
+              /* jQuery Ajax 提交、刷新 评论*/
+              #JA_commenLoading {
+                font-size: 12px;
+                background: url(data:images/gif;base64,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) no-repeat left center;
+                padding-left: 22px;
+                margin-bottom: 5px
+              }
 
-</body>
-</html>
+              #JA_commenError {
+                font-size: 12px;
+                background: url(data:images/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABdElEQVQ4y6WTS0sCcRTFTfC5UEyZhYj4xAcoiowwDIKSQRtxkQgK4i5wFUGua6frdkKupXVfIMMv0KZFtVCLTAgFWxXp6c4EE4OPtBaHyz338PvfyzAKAIqlqlR2Vs5Jy4eNhg8+X48gu38DxOOXUCqBUOhmc0C1moTJNIHVCuj1M9qivAlACafzCpHIJ4rFA6pj2O335OvWA+Tz+zAYPsCyT9RrwHG30OmmyGaPfwcMhxaEwx3xdpZ9pVPsiMUexN7lukO77V4NSKVKsFi+7WBQeNUBr/dF7I1G0DYnlNtaDGi1thGNdkVLkM0GFAohMMxI8vz+Eer1wGJAJnMIjQZSWKsFkslr8qaSp1IBPH9GeZUcUKuZaNV3KSjI7Z7Q/afweAYy3+EASqWAHJDLnctCglh2jGZzj+7uzs3S6Qs5gGEwF1KrZ/Q536hO52ZmM1AuH/0AOO4ZiUSP1JfE833yB1QfZb6QE/K5XGf1v7Cm/g34AiZUmQgJdHT+AAAAAElFTkSuQmCC) no-repeat left center;
+                padding-left: 22px;
+                margin-top: 5px;
+                color: red
+              }
+
+              #JA_commenSuccess {
+                font-size: 12px;
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAAlwSFlzAAAk6AAAJOgBgmMFHAAAAixJREFUOE99U71rFEEUn0MbTQLZeXOIIab0bndn97C2ENIlgvkLxP/ASgtbLeyDIkIKFREMXHb24y6axJwQ0UYUC8WIhZWCYKGFaIwZf29yt94lpwfDzb6Z9/t4701FDPlN3p88ND7yY9ru2JM4HrMH7Ob278rauzNf3g67X8ZqCzQW5HQlbNGHaFlZ3cZqkY0eKBvmtIW1GqQ0PRQkTLxjYUEbjU51NyEjG6Z/ly7Ixo+UjZbppzby/ABIsFgdBfLT+HF1X2IJAkAG0VAWPQRBQmdLELBdjjsI9jEO7HMkwkqQyu+6jb1TKD8HmTcl4jtHRkIjP7ogAzATEkoA7Fl6mMgbsVEnAPKcVcTriBm6KPxczXLBeoksEwc7zMgxl2zoFuRWWHKYyrvRCmysunhb+Im8yrJQYYvqb+lUXtJGndaZ/NbYqEI23S6TM5rvFZhJA0OvGOAas+kWEAv1tZaMR8zkpzSnc3ld2C6zofl4DW3t2mMbAHgjfLTEocI/B8NCbtabnu5vE6wMJPNd1wlDz0R9SR1H4JfzzgfMUsj3OqO68zwkme9xbaBgwRGhsp1usXZBuEApvUZ37rmJ7O8KdwrfrMBf8mYcgM7UKRRw21nozoIbGFR770Q6dh44I43oiIOlVVcLoDpv/xmoBicX8kXN0MS+NwEr53RLfuIhYRu9B8Wg7h3gHx1r1puHj/7zVQaL3hQe1QWoaEP+S24VXugT+L7pJ2p2b+Ifh4ZuACm9XXoAAAAASUVORK5CYII=) no-repeat left center;
+                padding-left: 22px;
+                margin-top: 5px;
+                color: green
+              }
+            </style>
+          <div id="JA_commenLoading" style="display:none;">评论提交中... 请稍候</div>
+          <div id="JA_commenError"></div>
+          <div id="JA_commenSuccess"></div><input name="submit" type="submit" id="submit" value="发表评论">
+          <input type="hidden" name="gid" value="465">
+          <input type="hidden" name="pid" id="comment-pid" value="0" size="22" tabindex="1">
+
+          </p>
+        </form>
+      </div>
+    </div>
+    <div id="comments">
+      <a name="comments" class="comment-top"></a>
+      <h3 id="comments-title" class="comments-header"><i class="fa fa-comments"></i> 19 条评论</h3>
+      <div id="loading-comments"><i class="fa fa-spinner fa-spin"></i></div>
+      <ol class="commentlist" id="comment-list">
+        <a name="5630"></a>
+        <li id="comment-5630" class="comment byuser comment-author-qxk6 odd alt thread-odd thread-alt depth-1">
+          <article id="div-comment-5630" class="comment-body">
+            <footer class="comment-meta">
+              <div class="comment-author vcard">
+                <img alt=""
+                  src="//dn-qiniu-avatar.qbox.me/avatar/d41d8cd98f00b204e9800998ecf8427e?s=40&amp;d=mm&amp;r=g"
+                  class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
+
+                <b class="fn">小李飞刀</b><span class="says"> 说道：</span>
+              </div><!-- .comment-author -->
+
+              <div class="comment-metadata">
+                <a>
+                  <time datetime="2023-09-10 17:19">
+                    2023-09-10 17:19 </time>
+                </a>
+              </div><!-- .comment-metadata -->
+
+            </footer><!-- .comment-meta -->
+
+            <div class="comment-content">
+              <p>为什么我装了以后，文件管理器不能解压和压缩呢，有那个按钮一点就提示操作失败，有遇到的吗，麻烦告知下。</p>
+              <img src="/content/templates/zanblog3/ua/img/16/os/win-6.png"> Windows 10 x64
+              <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 116.0.0.0
+            </div><!-- .comment-content -->
+
+            <div class="reply">
+              <a class="comment-reply-login" href="#comment-5630" onclick="commentReply(5630,this)">回复</a>
+            </div><!-- .reply -->
+          </article><!-- .comment-body -->
+
+          <ol class="children">
+            <a name="5631"></a>
+            <li id="comment-5631" class="comment byuser comment-author-benz odd alt depth-2">
+              <article id="div-comment" class="comment-body">
+                <footer class="comment-meta">
+                  <div class="comment-author vcard">
+                    <img alt=""
+                      src="//dn-qiniu-avatar.qbox.me/avatar/3534bc4dc1f45d73f2b36036b5c5c39a?s=40&amp;d=mm&amp;r=g"
+                      class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
+                    <b class="fn">消失的彩虹海</b><span class="says"> 说道：</span>
+                  </div><!-- .comment-author -->
+                  <div class="comment-metadata">
+                    <a>
+                      <time datetime="2023-09-10 18:50">
+                        2023-09-10 18:509 </time>
+                    </a>
+                  </div><!-- .comment-metadata -->
+                </footer><!-- .comment-meta -->
+
+                <div class="comment-content">
+                  <p>@小李飞刀：这个没遇到过，你安装.NET3.5了吗</p>
+                  <img src="/content/templates/zanblog3/ua/img/16/os/win-6.png"> Windows 10 x64
+                  <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 95.0.4638.69
+                </div><!-- .comment-content -->
+
+                <div class="reply">
+                  <a class="comment-reply-login" href="#comment-5631" onclick="commentReply(5631,this)">回复</a>
+                </div><!-- .reply -->
+              </article><!-- .comment-body -->
+            </li><!-- #comment-## -->
+            <ol class="children">
+              <a name="5632"></a>
+              <li id="comment-5632" class="comment byuser comment-author-benz odd alt depth-2">
+                <article id="div-comment" class="comment-body">
+                  <footer class="comment-meta">
+                    <div class="comment-author vcard">
+                      <img alt=""
+                        src="//dn-qiniu-avatar.qbox.me/avatar/d41d8cd98f00b204e9800998ecf8427e?s=40&amp;d=mm&amp;r=g"
+                        class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70"
+                        width="70"> <b class="fn">小李飞刀</b><span class="says"> 说道：</span>
+                    </div><!-- .comment-author -->
+                    <div class="comment-metadata">
+                      <a>
+                        <time datetime="2023-09-10 23:25">
+                          2023-09-10 23:259 </time>
+                      </a>
+                    </div><!-- .comment-metadata -->
+                  </footer><!-- .comment-meta -->
+
+                  <div class="comment-content">
+                    <p>@消失的彩虹海：安装了呢，一解压或者压缩就弹出来一个窗口，然后点确定就提示操作失败</p>
+                    <img src="/content/templates/zanblog3/ua/img/16/os/win-6.png"> Windows 10 x64
+                    <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 116.0.0.0
+                  </div><!-- .comment-content -->
+
+                  <div class="reply">
+                    <a class="comment-reply-login" href="#comment-5632" onclick="commentReply(5632,this)">回复</a>
+                  </div><!-- .reply -->
+                </article><!-- .comment-body -->
+              </li><!-- #comment-## -->
+            </ol><!-- .children -->
+          </ol><!-- .children -->
+        </li>
+        <a name="5614"></a>
+        <li id="comment-5614" class="comment byuser comment-author-qxk6 odd alt thread-odd thread-alt depth-1">
+          <article id="div-comment-5614" class="comment-body">
+            <footer class="comment-meta">
+              <div class="comment-author vcard">
+                <img alt=""
+                  src="//dn-qiniu-avatar.qbox.me/avatar/40c0a887834ae9c3a744d2f0c6013c03?s=40&amp;d=mm&amp;r=g"
+                  class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
+
+                <b class="fn">彩虹用户</b><span class="says"> 说道：</span>
+              </div><!-- .comment-author -->
+
+              <div class="comment-metadata">
+                <a>
+                  <time datetime="2023-09-07 06:50">
+                    2023-09-07 06:50 </time>
+                </a>
+              </div><!-- .comment-metadata -->
+
+            </footer><!-- .comment-meta -->
+
+            <div class="comment-content">
+              <p>php扩展不能用</p>
+              <img src="/content/templates/zanblog3/ua/img/16/device/vivo.png"> vivo
+              <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 87.0.4280.141
+            </div><!-- .comment-content -->
+
+            <div class="reply">
+              <a class="comment-reply-login" href="#comment-5614" onclick="commentReply(5614,this)">回复</a>
+            </div><!-- .reply -->
+          </article><!-- .comment-body -->
+        </li>
+      </ol>
+
+    </div>
+  </div>
+</div>
+
+{{ end }}
