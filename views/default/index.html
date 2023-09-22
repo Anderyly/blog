@@ -4,8 +4,7 @@
 
 {{ $user := GetUser }}
 
-{{ $templates := GetTemplateConfig }}
-
+{{ $template := GetTemplateConfig }}
 <section id="zan-bodyer">
     <div class="container">
         <section class="row">
@@ -15,7 +14,7 @@
                         <div class="title">公 告</div>
                         <article class="ulist">
                             <h2>
-                                <i class="icon-eject icon-large"></i>{{ $templates.notice }}
+                                <i class="icon-eject icon-large"></i>{{ $template.notice }}
                             </h2>
                         </article>
                     </div>
@@ -85,8 +84,13 @@
                 <!-- 分页 -->
                 <div id="zan-page" class="clearfix">
                     <ul class="pagination pagination-zan pull-right">
+                        {{ $page := .page }}
                         {{ range $k, $v := .pages }}
+                        {{ if eq $v $page }}
+                        <a href="javascript:;" style="background-color: #428BCA">{{ $v }}</a>
+                        {{ else }}
                         <a href="{{ GetPageLink $v }}">{{ $v }}</a>
+                        {{ end }}
                         {{ end }}
                 </div>
                 <!-- 分页结束 -->

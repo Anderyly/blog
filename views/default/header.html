@@ -1,5 +1,8 @@
 {{ define "default/header" }}
 
+{{ $template := GetTemplateConfig }}
+{{ $category := .category }}
+
 <!DOCTYPE html>
 <!--[if lt IE 7 ]><html class="ie ie6" lang="zh-CN"><![endif]-->
 <!--[if IE 7 ]><html class="ie ie7" lang="zh-CN"><![endif]-->
@@ -22,18 +25,16 @@
     <link rel="wlwmanifest" type="application/wlwmanifest+xml" href="{{ .siteConf.web_url }}wlwmanifest" />
     <link rel="alternate" type="application/rss+xml" title="RSS"  href="{{ .siteConf.web_url }}rss" />
     <style type="text/css">
-        a:hover{color:#428BCA}  .header,.panel.panel-zan .panel-heading,.label-zan,.slide-text,.day,.audiojs .scrubber .loaded,.zan-author .author-bottom{background-color:#428BCA}nav.navbar-inverse .navbar-nav li.current-menu-item>a,nav.navbar-inverse .navbar-nav li.current-menu-parent>a,.addcomment input{border-color:#428BCA}.header .logo.animation{box-shadow:#428bca 1px 1px;background-color:#428BCA}.article-stick,.post-info i,#reply-title,#related-title,.comments-header,.attachment a{color:#428BCA}.btn-zan-solid-pw,.btn-zan-solid-pi,.pagination-zan span{border:2px solid #428BCA;background-color:#428BCA}#reply-title,#related-title,.comments-header{border-bottom:2px solid #428BCA}#commentform #submit,.pager li>a,.btn-zan-line-pp,.btn-zan-line-pp .badge,.pagination-zan>a ,.addcomment #submit{color:#428BCA;border:2px solid #428BCA}#commentform #submit:hover,.pager li>a:hover,.login-form .input-group-addon,#commentform .input-group .input-group-addon,.pagination-zan>a:hover,.addcomment .input-group .input-group-addon{background-color:#428BCA;border:2px solid #428BCA}nav.navbar-inverse ul.dropdown-menu a:hover,.btn-zan-solid-ip:hover{background-color:#428BCA!important}nav.navbar-inverse .open a{border-bottom:3px solid #428BCA}nav.navbar-inverse .open a:hover{border-bottom:3px solid #428BCA}#commentform textarea:focus,#searchform input:focus,#commentform input,.attachment a,.form-control:focus,.btn-zan-line-pp:hover,.addcomment #submit,.btn-zan-solid-ip:hover{border:2px solid #428BCA}.attachment a:hover,.btn-zan-line-pp:hover .badge,.btn-zan-line-pp:hover,.top_post .title {background-color:#428BCA}
+        a:hover{color:{{ $template.color }}}  .header,.panel.panel-zan .panel-heading,.label-zan,.slide-text,.day,.audiojs .scrubber .loaded,.zan-author .author-bottom{background-color:{{ $template.color }}}nav.navbar-inverse .navbar-nav li.current-menu-item>a,nav.navbar-inverse .navbar-nav li.current-menu-parent>a,.addcomment input{border-color:{{ $template.color }}}.header .logo.animation{box-shadow:{{ $template.color }} 1px 1px;background-color:{{ $template.color }}}.article-stick,.post-info i,#reply-title,#related-title,.comments-header,.attachment a{color:{{ $template.color }}}.btn-zan-solid-pw,.btn-zan-solid-pi,.pagination-zan span{border:2px solid {{ $template.color }};background-color:{{ $template.color }}}#reply-title,#related-title,.comments-header{border-bottom:2px solid {{ $template.color }}}#commentform #submit,.pager li>a,.btn-zan-line-pp,.btn-zan-line-pp .badge,.pagination-zan>a ,.addcomment #submit{color:{{ $template.color }};border:2px solid {{ $template.color }}}#commentform #submit:hover,.pager li>a:hover,.login-form .input-group-addon,#commentform .input-group .input-group-addon,.pagination-zan>a:hover,.addcomment .input-group .input-group-addon{background-color:{{ $template.color }};border:2px solid {{ $template.color }}}nav.navbar-inverse ul.dropdown-menu a:hover,.btn-zan-solid-ip:hover{background-color:{{ $template.color }}!important}nav.navbar-inverse .open a{border-bottom:3px solid {{ $template.color }}}nav.navbar-inverse .open a:hover{border-bottom:3px solid {{ $template.color }}}#commentform textarea:focus,#searchform input:focus,#commentform input,.attachment a,.form-control:focus,.btn-zan-line-pp:hover,.addcomment #submit,.btn-zan-solid-ip:hover{border:2px solid {{ $template.color }}}.attachment a:hover,.btn-zan-line-pp:hover .badge,.btn-zan-line-pp:hover,.top_post .title {background-color:{{ $template.color }}}
     </style>
     <style type="text/css">
-        nav.navbar-inverse,.login-panel,.audiojs,.zan-link, .zan-copyright,.zan-author .author-top,#zan-gotop .gotop,.footer-space-line{background-color:#0b445b}#zan-gotop .gotop::before{border-right:13px solid #0b445b;}#zan-gotop .gotop::after{border-left:13px solid #0b445b}nav.navbar-inverse .open a:hover{background-color:#0b445b!important;}.zan-copyright:before{right:0;background-image:-webkit-linear-gradient(top left, #fff 50%, #0b445b 50%);background-image:linear-gradient(315deg, #fff 50%, #0b445b 50%);}.week,.day,.sun,.zan-category a:hover{background:#0b445b}.btn-zan-solid-ip{background-color: #0b445b;border: 2px solid #0b445b;}
+        nav.navbar-inverse,.login-panel,.audiojs,.zan-link, .zan-copyright,.zan-author .author-top,#zan-gotop .gotop,.footer-space-line{background-color:{{ $template.background_color }}}#zan-gotop .gotop::before{border-right:13px solid {{ $template.background_color }};}#zan-gotop .gotop::after{border-left:13px solid {{ $template.background_color }}}nav.navbar-inverse .open a:hover{background-color:{{ $template.background_color }}!important;}.zan-copyright:before{right:0;background-image:-webkit-linear-gradient(top left, #fff 50%, {{ $template.background_color }} 50%);background-image:linear-gradient(315deg, #fff 50%, {{ $template.background_color }} 50%);}.week,.day,.sun,.zan-category a:hover{background:{{ $template.background_color }}}.btn-zan-solid-ip{background-color: {{ $template.background_color }};border: 2px solid {{ $template.background_color }};}
     </style>
 </head>
 <body class="home blog">
 <header id="zan-header">
     <!-- logo -->
-    <div class="header">
-        <div class="logo" data-toggle="animation"></div>
-    </div>
+    <div id="header"></div>
     <!-- logo结束 -->
     <!-- 导航 -->
     <nav class="navbar navbar-inverse" id="zan-nav">
@@ -44,12 +45,11 @@
             </button>
             <div class="navbar-collapse collapse">
                 <ul id="menu-navbar" class="nav navbar-nav">
-                    <li id="menu-item" class="menu-item menu-item-type-post_type menu-item-object-page  current-menu-item current_page_item">
-                        <a href="/">
-                            <i class="fa fa-home"></i>首页</a>
+                    <li id="menu-item" class="menu-item menu-item-type-post_type menu-item-object-page  {{ if eq  $category "" }}current-menu-item current_page_item{{ end }}">
+                        <a href="/"><i class="fa fa-home"></i>首页</a>
                     </li>
                     {{ range $k,$v := ListCategory }}
-                    <li id="menu-item" class="menu-item menu-item-type-post_type menu-item-object-page  ">
+                    <li id="menu-item" class="menu-item menu-item-type-post_type menu-item-object-page  {{ if eq $v.Slug $category }}current-menu-item current_page_item{{ end }}">
                         <a href="{{ GetCategoryLink $v.Slug }}"><i class="{{ $v.Icon }}"></i>{{ $v.Name }}</a>
                     </li>
                     {{ end }}
