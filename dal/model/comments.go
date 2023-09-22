@@ -33,4 +33,5 @@ type Comments struct {
 	ContentTitle  string      `gorm:"-"`                                                                     // 文章标题
 	Slug          string      `gorm:"-"`
 	ChildComments []*Comments `gorm:"-"`
+	LastAtName    string      `gorm:"-"`
 }

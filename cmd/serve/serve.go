@@ -31,8 +31,8 @@ func Cmd() *cobra.Command {
 			//}()
 
 			// 加载gin
-			gin.SetMode(gin.ReleaseMode)
-			r = gin.New()
+			gin.SetMode(gin.DebugMode)
+			r = gin.Default()
 			middleware.Instance(r)
 			custom.Set(r)
 			r.LoadHTMLGlob("views/**/*")

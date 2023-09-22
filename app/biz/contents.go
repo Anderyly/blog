@@ -9,6 +9,7 @@ package biz
 
 import (
 	"blog/ay"
+	"blog/dal"
 	"blog/dal/model"
 	"blog/dal/query"
 	"blog/utils"
@@ -104,7 +105,7 @@ func (con contents) WithSetCategory() OptionContents {
 // ListNew 获取最新文章
 func (con contents) ListNew(limit int) (list []*model.Contents, err error) {
 	qe := query.Use(ay.Db).Contents
-	if list, err = qe.WithContext(con.ctx).Select(qe.Slug, qe.Title).Where(qe.Type.Eq(int(model.ContentsTypePost))).Limit(limit).Order(qe.CreatedAt.Desc()).Find(); err != nil {
+	if list, err = qe.WithContext(con.ctx).Select(qe.Slug, qe.Title).Where(qe.Type.Eq(int(model.ContentsTypePost)), qe.Status.Eq(int(dal.StatusSuccess))).Limit(limit).Order(qe.CreatedAt.Desc()).Find(); err != nil {
 		return
 	}
 	return
@@ -117,7 +118,7 @@ func (con contents) ListRecommend(contentsId int64, tags []int64, limit int) (li
 	if list, err = qe.WithContext(con.ctx).
 		Join(qw, qw.Mid.In(tags...), qe.Cid.EqCol(qw.Cid)).
 		Select(qe.Slug, qe.Title).
-		Where(qe.Type.Eq(int(model.ContentsTypePost)), qe.Cid.Neq(contentsId)).
+		Where(qe.Type.Eq(int(model.ContentsTypePost)), qe.Cid.Neq(contentsId), qe.Status.Eq(int(dal.StatusSuccess))).
 		Limit(limit).
 		Group(qe.Cid).
 		Find(); err != nil {
@@ -153,8 +154,7 @@ type ListContentsArgs struct {
 // List 文章列表
 func (con contents) List(args ListContentsArgs, opts ...OptionContents) (list []*model.Contents, count int64, err error) {
 	qe := query.Use(ay.Db).Contents
-	do := qe.WithContext(con.ctx)
-	fmt.Println(args)
+	do := qe.WithContext(con.ctx).Where(qe.Type.Eq(int(model.ContentsTypePost)), qe.Status.Eq(int(dal.StatusSuccess)))
 	if args.Keyword != "" {
 		do = do.Where(qe.Title.Like("%" + args.Keyword + "%"))
 	}
@@ -181,7 +181,7 @@ func (con contents) List(args ListContentsArgs, opts ...OptionContents) (list []
 func (con contents) GetBySlug(slug string, opts ...OptionContents) (res *model.Contents, err error) {
 	qe := query.Use(ay.Db).Contents
 	do := qe.WithContext(con.ctx)
-	if res, err = do.Where(qe.Slug.Eq(slug)).Take(); err != nil {
+	if res, err = do.Where(qe.Slug.Eq(slug), qe.Status.Eq(int(dal.StatusSuccess))).Take(); err != nil {
 		return
 	}
 
@@ -196,7 +196,7 @@ func (con contents) GetBySlug(slug string, opts ...OptionContents) (res *model.C
 // Count 获取文章总数
 func (con contents) Count(contentsType model.ContentsType) (count int64, err error) {
 	qe := query.Use(ay.Db).Contents
-	if count, err = qe.WithContext(con.ctx).Where(qe.Type.Eq(int(contentsType))).Count(); err != nil {
+	if count, err = qe.WithContext(con.ctx).Where(qe.Type.Eq(int(contentsType)), qe.Status.Eq(int(dal.StatusSuccess))).Count(); err != nil {
 		return
 	}
 	return
@@ -205,7 +205,7 @@ func (con contents) Count(contentsType model.ContentsType) (count int64, err err
 // GetLast 获取上一篇文章
 func (con contents) GetLast(contentsId int64) (row *model.Contents, err error) {
 	qe := query.Use(ay.Db).Contents
-	if row, err = qe.WithContext(con.ctx).Where(qe.Cid.Lt(contentsId)).Order(qe.Cid.Desc()).Take(); err != nil {
+	if row, err = qe.WithContext(con.ctx).Where(qe.Cid.Lt(contentsId), qe.Status.Eq(int(dal.StatusSuccess))).Order(qe.Cid.Desc()).Take(); err != nil {
 		return
 	}
 	return
@@ -214,7 +214,7 @@ func (con contents) GetLast(contentsId int64) (row *model.Contents, err error) {
 // GetNext 获取下一篇文章
 func (con contents) GetNext(contentsId int64) (row *model.Contents, err error) {
 	qe := query.Use(ay.Db).Contents
-	if row, err = qe.WithContext(con.ctx).Where(qe.Cid.Gt(contentsId)).Order(qe.Cid).Take(); err != nil {
+	if row, err = qe.WithContext(con.ctx).Where(qe.Cid.Gt(contentsId), qe.Status.Eq(int(dal.StatusSuccess))).Order(qe.Cid).Take(); err != nil {
 		return
 	}
 	return

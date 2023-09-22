@@ -1,5 +1,6 @@
 {{ define "default/comments" }}
 
+{{ $comments := ListContentComments .contents.Cid }}
 <div id="comments-template">
   <div class="comments-wrap">
     <div id="comment-place">
@@ -54,136 +55,72 @@
     </div>
     <div id="comments">
       <a name="comments" class="comment-top"></a>
-      <h3 id="comments-title" class="comments-header"><i class="fa fa-comments"></i> 19 条评论</h3>
+      <h3 id="comments-title" class="comments-header"><i class="fa fa-comments"></i> {{ GetCommentCount .contents.Cid }} 条评论</h3>
       <div id="loading-comments"><i class="fa fa-spinner fa-spin"></i></div>
       <ol class="commentlist" id="comment-list">
-        <a name="5630"></a>
-        <li id="comment-5630" class="comment byuser comment-author-qxk6 odd alt thread-odd thread-alt depth-1">
-          <article id="div-comment-5630" class="comment-body">
+        {{ range $k,$v := $comments }}
+        <a name="{{ $v.Coid }}"></a>
+        <li id="comment-{{ $v.Coid }}" class="comment byuser comment-author-qxk6 odd alt thread-odd thread-alt depth-1">
+          <article id="div-comment-{{ $v.Coid }}" class="comment-body">
             <footer class="comment-meta">
               <div class="comment-author vcard">
-                <img alt=""
-                  src="//dn-qiniu-avatar.qbox.me/avatar/d41d8cd98f00b204e9800998ecf8427e?s=40&amp;d=mm&amp;r=g"
-                  class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
-
-                <b class="fn">小李飞刀</b><span class="says"> 说道：</span>
+                <img alt="" src="{{ GetAvatar $v.Mail }}" class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
+                <b class="fn">{{ $v.Author }}</b><span class="says"> 说道：</span>
               </div><!-- .comment-author -->
 
               <div class="comment-metadata">
                 <a>
-                  <time datetime="2023-09-10 17:19">
-                    2023-09-10 17:19 </time>
+                  <time datetime="{{ DateFormat $v.CreatedAt `2006-01-02 15:04` }}">
+                    {{ DateFormat $v.CreatedAt `2006-01-02 15:04` }} </time>
                 </a>
               </div><!-- .comment-metadata -->
 
             </footer><!-- .comment-meta -->
 
             <div class="comment-content">
-              <p>为什么我装了以后，文件管理器不能解压和压缩呢，有那个按钮一点就提示操作失败，有遇到的吗，麻烦告知下。</p>
-              <img src="/content/templates/zanblog3/ua/img/16/os/win-6.png"> Windows 10 x64
-              <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 116.0.0.0
+              <p>{{ $v.Text }}</p>
             </div><!-- .comment-content -->
 
             <div class="reply">
-              <a class="comment-reply-login" href="#comment-5630" onclick="commentReply(5630,this)">回复</a>
+              <a class="comment-reply-login" href="#comment-{{ $v.Coid }}" onclick="commentReply({{ $v.Coid }},this)">回复</a>
             </div><!-- .reply -->
           </article><!-- .comment-body -->
 
+          {{ if $v.ChildComments }}
           <ol class="children">
-            <a name="5631"></a>
-            <li id="comment-5631" class="comment byuser comment-author-benz odd alt depth-2">
+            {{ range $k1,$v1 := $v.ChildComments }}
+            <a name="{{ $v1.Coid }}"></a>
+            <li id="comment-{{ $v1.Coid }}" class="comment byuser comment-author-benz odd alt depth-2">
               <article id="div-comment" class="comment-body">
                 <footer class="comment-meta">
                   <div class="comment-author vcard">
-                    <img alt=""
-                      src="//dn-qiniu-avatar.qbox.me/avatar/3534bc4dc1f45d73f2b36036b5c5c39a?s=40&amp;d=mm&amp;r=g"
-                      class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
-                    <b class="fn">消失的彩虹海</b><span class="says"> 说道：</span>
+                    <img alt="" src="{{ GetAvatar $v1.Mail }}" class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
+                    <b class="fn">{{ $v1.Author }}</b><span class="says"> 说道：</span>
                   </div><!-- .comment-author -->
                   <div class="comment-metadata">
                     <a>
-                      <time datetime="2023-09-10 18:50">
-                        2023-09-10 18:509 </time>
+                      <time datetime="{{ DateFormat $v1.CreatedAt `2006-01-02 15:04` }}">
+                        {{ DateFormat $v1.CreatedAt `2006-01-02 15:04` }} </time>
                     </a>
                   </div><!-- .comment-metadata -->
                 </footer><!-- .comment-meta -->
 
                 <div class="comment-content">
-                  <p>@小李飞刀：这个没遇到过，你安装.NET3.5了吗</p>
-                  <img src="/content/templates/zanblog3/ua/img/16/os/win-6.png"> Windows 10 x64
-                  <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 95.0.4638.69
+                  <p>@{{ $v1.LastAtName }}：{{ $v1.Text }}</p>
                 </div><!-- .comment-content -->
 
                 <div class="reply">
-                  <a class="comment-reply-login" href="#comment-5631" onclick="commentReply(5631,this)">回复</a>
+                  <a class="comment-reply-login" href="#comment-{{ $v.Coid }}" onclick="commentReply({{ $v1.Coid }},this)">回复</a>
                 </div><!-- .reply -->
               </article><!-- .comment-body -->
             </li><!-- #comment-## -->
-            <ol class="children">
-              <a name="5632"></a>
-              <li id="comment-5632" class="comment byuser comment-author-benz odd alt depth-2">
-                <article id="div-comment" class="comment-body">
-                  <footer class="comment-meta">
-                    <div class="comment-author vcard">
-                      <img alt=""
-                        src="//dn-qiniu-avatar.qbox.me/avatar/d41d8cd98f00b204e9800998ecf8427e?s=40&amp;d=mm&amp;r=g"
-                        class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70"
-                        width="70"> <b class="fn">小李飞刀</b><span class="says"> 说道：</span>
-                    </div><!-- .comment-author -->
-                    <div class="comment-metadata">
-                      <a>
-                        <time datetime="2023-09-10 23:25">
-                          2023-09-10 23:259 </time>
-                      </a>
-                    </div><!-- .comment-metadata -->
-                  </footer><!-- .comment-meta -->
-
-                  <div class="comment-content">
-                    <p>@消失的彩虹海：安装了呢，一解压或者压缩就弹出来一个窗口，然后点确定就提示操作失败</p>
-                    <img src="/content/templates/zanblog3/ua/img/16/os/win-6.png"> Windows 10 x64
-                    <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 116.0.0.0
-                  </div><!-- .comment-content -->
-
-                  <div class="reply">
-                    <a class="comment-reply-login" href="#comment-5632" onclick="commentReply(5632,this)">回复</a>
-                  </div><!-- .reply -->
-                </article><!-- .comment-body -->
-              </li><!-- #comment-## -->
-            </ol><!-- .children -->
+            {{ end }}
           </ol><!-- .children -->
+
+          {{ end }}
+
         </li>
-        <a name="5614"></a>
-        <li id="comment-5614" class="comment byuser comment-author-qxk6 odd alt thread-odd thread-alt depth-1">
-          <article id="div-comment-5614" class="comment-body">
-            <footer class="comment-meta">
-              <div class="comment-author vcard">
-                <img alt=""
-                  src="//dn-qiniu-avatar.qbox.me/avatar/40c0a887834ae9c3a744d2f0c6013c03?s=40&amp;d=mm&amp;r=g"
-                  class="avatar avatar-70 wp-user-avatar wp-user-avatar-70 alignnone photo" height="70" width="70">
-
-                <b class="fn">彩虹用户</b><span class="says"> 说道：</span>
-              </div><!-- .comment-author -->
-
-              <div class="comment-metadata">
-                <a>
-                  <time datetime="2023-09-07 06:50">
-                    2023-09-07 06:50 </time>
-                </a>
-              </div><!-- .comment-metadata -->
-
-            </footer><!-- .comment-meta -->
-
-            <div class="comment-content">
-              <p>php扩展不能用</p>
-              <img src="/content/templates/zanblog3/ua/img/16/device/vivo.png"> vivo
-              <img src="/content/templates/zanblog3/ua/img/16/browser/chrome.png"> Google Chrome 87.0.4280.141
-            </div><!-- .comment-content -->
-
-            <div class="reply">
-              <a class="comment-reply-login" href="#comment-5614" onclick="commentReply(5614,this)">回复</a>
-            </div><!-- .reply -->
-          </article><!-- .comment-body -->
-        </li>
+        {{ end }}
       </ol>
 
     </div>

@@ -118,6 +118,16 @@ func Set(r *gin.Engine) {
 			}
 			return
 		},
+		// 获取评论总数
+		"ListContentComments": func(contentsId int64) []*model.Comments {
+			b := biz.NewBiz(context.Background())
+			list, err := b.Comments.ListByContentId(contentsId, b.Comments.WithSetChild())
+			if err != nil {
+				ay.Logger.Error(err.Error())
+				return nil
+			}
+			return list
+		},
 		// 获取最新评论
 		"ListCommentsNew": func(limit int) (list []*model.Comments) {
 			b := biz.NewBiz(context.Background())
@@ -129,10 +139,10 @@ func Set(r *gin.Engine) {
 			return
 		},
 		// 获取评论总数
-		"GetCommentCount": func() (count int64) {
+		"GetCommentCount": func(contentId int64) (count int64) {
 			b := biz.NewBiz(context.Background())
 			var err error
-			count, err = b.Comments.Count()
+			count, err = b.Comments.Count(biz.CommentsCountCondition{ContentId: contentId})
 			if err != nil {
 				ay.Logger.Error(err.Error())
 			}
