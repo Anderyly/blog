@@ -190,3 +190,11 @@ func (con comments) ListByIds(ids []int64, opts ...OptionComments) (list []*mode
 	}
 	return
 }
+
+// 创建
+func (con comments) Create(args *model.Comments) (err error) {
+	if err = query.Use(ay.Db).Comments.WithContext(con.ctx).Create(args); err != nil {
+		return
+	}
+	return
+}

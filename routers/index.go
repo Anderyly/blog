@@ -19,6 +19,7 @@ func IndexRouter(r *gin.Engine) {
 	router.GET("page/:page", index.IndexController{}.Index)
 	router.GET("category/:category", index.IndexController{}.Index)
 	router.GET("archives/tag/:tag", index.IndexController{}.Index)
-	
+
 	router.GET("archives/:slug", index.IndexController{}.Archives)
+	router.POST("comment/add", index.IndexController{}.AddComment)
 }

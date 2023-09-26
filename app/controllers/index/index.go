@@ -9,9 +9,11 @@ package index
 
 import (
 	"blog/app/biz"
-	"blog/ay"
-	"blog/dal/model"
 	"blog/app/controllers"
+	"blog/ay"
+	"blog/ay/lib"
+	"blog/dal"
+	"blog/dal/model"
 	"blog/utils"
 	"context"
 	"github.com/gin-gonic/gin"
@@ -108,4 +110,42 @@ func (con IndexController) Archives(c *gin.Context) {
 		"contents": res,
 		"category": res.Category.Slug,
 	})
+}
+
+type AddCommentForm struct {
+	Nickname  string `form:"nickname" binding:"required"`
+	Email     string `form:"email"`
+	Content   string `form:"content" binding:"required"`
+	ContentId int64  `form:"content_id" binding:"required"`
+	ParentId  int64  `form:"parent_id"`
+}
+
+// 添加评论
+func (con IndexController) AddComment(c *gin.Context) {
+	var err error
+	r := lib.NewJson(c)
+	var data AddCommentForm
+	if err = c.ShouldBind(&data); err != nil {
+		r.Fail(ay.Validator{}.Translate(err))
+		return
+	}
+
+	status := dal.StatusSuccess
+
+	b := biz.NewBiz(context.Background())
+	if err = b.Comments.Create(&model.Comments{
+		Cid:       data.ContentId,
+		Author:    data.Nickname,
+		Mail:      data.Email,
+		Text:      data.Content,
+		ParentId:  data.ParentId,
+		Status:    status,
+		CreatedAt: time.Now().Unix(),
+	}); err != nil {
+		ay.Logger.Error(err.Error())
+		return
+	}
+
+	r.Success("评论成功")
+
 }
