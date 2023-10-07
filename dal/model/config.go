@@ -8,11 +8,13 @@
 package model
 
 const (
-	ConfigTitleKey       = "title"
-	ConfigKeywordsKey    = "keywords"
-	ConfigDescriptionKey = "description"
-	ConfigWebUrlKey      = "web_url"
-	ConfigTemplateKey    = "template"
+	ConfigTitleKey       = "title"         // 网站标题
+	ConfigKeywordsKey    = "keywords"      // 网站关键词
+	ConfigDescriptionKey = "description"   // 网站描述
+	ConfigWebUrlKey      = "web_url"       // 网站地址
+	ConfigTemplateKey    = "template"      // 当前模板
+	ConfigCommentBan     = "comment_ban"   // 评论违禁词
+	ConfigCommentApply   = "comment_apply" // 评论审核
 )
 
 type Config struct {

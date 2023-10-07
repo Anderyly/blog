@@ -85,12 +85,18 @@
                 <div id="zan-page" class="clearfix">
                     <ul class="pagination pagination-zan pull-right">
                         {{ $page := .page }}
+                        {{ if gt $page 4 }}
+                        <a href="{{ GetPageLink 1 }}"><</a>
+                        {{ end }}
                         {{ range $k, $v := .pages }}
                         {{ if eq $v $page }}
-                        <a href="javascript:;" style="background-color: #428BCA">{{ $v }}</a>
+                        <span style="background-color:{{ $template.color }}">{{ $v }}</span>
                         {{ else }}
                         <a href="{{ GetPageLink $v }}">{{ $v }}</a>
                         {{ end }}
+                        {{ end }}
+                        {{ if lt $page .lessPage }}
+                        <a href="{{ GetPageLink .maxPage }}">></a>
                         {{ end }}
                 </div>
                 <!-- 分页结束 -->

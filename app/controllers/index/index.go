@@ -69,6 +69,8 @@ func (con IndexController) Index(c *gin.Context) {
 		"page":     page,
 		"category": queryCategory,
 		"keywords": queryKeywords,
+		"maxPage":  int(count) / 10,
+		"lessPage": int(count)/10 - 3,
 	})
 }
 
@@ -130,7 +132,38 @@ func (con IndexController) AddComment(c *gin.Context) {
 		return
 	}
 
+	// 验证违禁词
+	if commentBan, ok := controllers.SiteConf[model.ConfigCommentBan]; ok {
+		commentBanArr := strings.Split(commentBan, ",")
+		isIncludeBan := false
+		for _, v := range commentBanArr {
+			if v == "" {
+				continue
+			}
+			if strings.Contains(data.Content, v) {
+				isIncludeBan = true
+				break
+			}
+		}
+		if isIncludeBan {
+			r.Fail("评论内容包含违禁词")
+			return
+		}
+	}
+
 	status := dal.StatusSuccess
+
+	// 验证评论是否需要审核
+	if configCommentApply, ok := controllers.SiteConf[model.ConfigCommentApply]; ok {
+		var commentApply int
+		if commentApply, err = strconv.Atoi(configCommentApply); err != nil {
+			r.Fail(err.Error())
+			return
+		}
+		if commentApply == int(dal.SureYes) {
+			status = dal.StatusApply
+		}
+	}
 
 	b := biz.NewBiz(context.Background())
 	if err = b.Comments.Create(&model.Comments{

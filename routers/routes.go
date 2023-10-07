@@ -10,6 +10,7 @@ import (
 
 func Instance(r *gin.Engine) {
 	IndexRouter(r)
+	SitemapRouter(r)
 
 	b := biz.NewBiz(context.Background())
 	template, err := b.Config.Get("template")
