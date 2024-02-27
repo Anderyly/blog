@@ -20,5 +20,5 @@ func SitemapRouter(r *gin.Engine) {
 	router.GET("page-sitemap.xml", index.SitemapController{}.Page)
 	router.GET("category-sitemap.xml", index.SitemapController{}.Category)
 	router.GET("post_tag-sitemap.xml", index.SitemapController{}.Tag)
-	//router.GET("author-sitemap.xml", index.SitemapController{}.Author)
+	router.GET("author-sitemap.xml", index.SitemapController{}.Author)
 }

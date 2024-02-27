@@ -35,6 +35,42 @@ type SitemapUrlSet struct {
 }
 
 func (con SitemapController) Index(c *gin.Context) {
+
+	var urls []SitemapUrl
+
+	urls = append(urls, SitemapUrl{
+		Loc:     controllers.SiteConf[model.ConfigWebUrlKey] + url.QueryEscape("post-sitemap.xml"),
+		Lastmod: time.Now().Format("2006-01-02T15:04:05+08:00"),
+	})
+	urls = append(urls, SitemapUrl{
+		Loc:     controllers.SiteConf[model.ConfigWebUrlKey] + url.QueryEscape("page-sitemap.xml"),
+		Lastmod: time.Now().Format("2006-01-02T15:04:05+08:00"),
+	})
+	urls = append(urls, SitemapUrl{
+		Loc:     controllers.SiteConf[model.ConfigWebUrlKey] + url.QueryEscape("category-sitemap.xml"),
+		Lastmod: time.Now().Format("2006-01-02T15:04:05+08:00"),
+	})
+	urls = append(urls, SitemapUrl{
+		Loc:     controllers.SiteConf[model.ConfigWebUrlKey] + url.QueryEscape("post_tag-sitemap.xml"),
+		Lastmod: time.Now().Format("2006-01-02T15:04:05+08:00"),
+	})
+	urls = append(urls, SitemapUrl{
+		Loc:     controllers.SiteConf[model.ConfigWebUrlKey] + url.QueryEscape("author-sitemap.xml"),
+		Lastmod: time.Now().Format("2006-01-02T15:04:05+08:00"),
+	})
+
+	sitemap := SitemapUrlSet{
+		URLs: urls,
+	}
+
+	encoder := xml.NewEncoder(os.Stdout)
+	encoder.Indent("", "  ")
+
+	if err := encoder.Encode(sitemap); err != nil {
+		ay.Logger.Error(err.Error())
+		return
+	}
+	c.XML(http.StatusOK, sitemap)
 }
 func (con SitemapController) Post(c *gin.Context) {
 
@@ -163,6 +199,40 @@ func (con SitemapController) Tag(c *gin.Context) {
 	for _, v := range res {
 
 		loc := controllers.SiteConf[model.ConfigWebUrlKey] + "archives/tag/" + url.QueryEscape(v.Slug)
+		urls = append(urls, SitemapUrl{
+			Loc:     loc,
+			Lastmod: time.Now().Format("2006-01-02T15:04:05+08:00"),
+		})
+	}
+
+	sitemap := SitemapUrlSet{
+		URLs: urls,
+	}
+
+	encoder := xml.NewEncoder(os.Stdout)
+	encoder.Indent("", "  ")
+
+	if err := encoder.Encode(sitemap); err != nil {
+		ay.Logger.Error(err.Error())
+		return
+	}
+	c.XML(http.StatusOK, sitemap)
+}
+
+func (con SitemapController) Author(c *gin.Context) {
+
+	var res []*model.Users
+	var err error
+	qe := query.Use(ay.Db).Users
+	if res, err = qe.WithContext(c).Select(qe.Account).Find(); err != nil {
+		ay.Logger.Error(err.Error())
+		return
+	}
+
+	var urls []SitemapUrl
+	for _, v := range res {
+
+		loc := controllers.SiteConf[model.ConfigWebUrlKey] + "author/" + url.QueryEscape(v.Account)
 		urls = append(urls, SitemapUrl{
 			Loc:     loc,
 			Lastmod: time.Now().Format("2006-01-02T15:04:05+08:00"),

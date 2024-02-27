@@ -21,7 +21,7 @@ type Users struct {
 	Mail        string `gorm:"column:mail;default:''" json:"mail,omitempty"`                        // 邮箱
 	Url         string `gorm:"column:url;default:''" json:"url,omitempty"`                          // 网址
 	Nickname    string `gorm:"column:nickname;default:''" json:"nickname,omitempty"`                // 昵称
-	Role        Role   `gorm:"column:group;default:2" json:"group,omitempty"`                       // 角色
+	Role        Role   `gorm:"column:role;default:2" json:"group,omitempty"`                        // 角色
 	ActivatedAt uint32 `gorm:"column:activated_at;default:0" json:"activated_at,omitempty"`         // 上次活动时间
 	CreatedAt   int64  `gorm:"column:created_at;default:0" json:"created_at,omitempty"`             // 创建时间
 }

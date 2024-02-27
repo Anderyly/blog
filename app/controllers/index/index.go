@@ -104,7 +104,10 @@ func (con IndexController) Archives(c *gin.Context) {
 		}
 	}()
 
-	//lib.NewJson(c).Success(res)
+	//row, _ := b.Comments.ListByContentId(res.Cid)
+	//lib.NewJson(c).Success(gin.H{
+	//	"ss": row,
+	//})
 	//return
 
 	c.HTML(http.StatusOK, "default/archives", gin.H{

@@ -106,7 +106,7 @@ func (con comments) WithSetAtName() OptionComments {
 	}
 }
 
-// 获取最新评论
+// ListNew 获取最新评论
 func (con comments) ListNew(limit int, opts ...OptionComments) (list []*model.Comments, err error) {
 	qe := query.Use(ay.Db).Comments
 	if list, err = qe.WithContext(con.ctx).Where(qe.Status.Eq(int(dal.StatusSuccess))).Limit(limit).Order(qe.CreatedAt.Desc()).Find(); err != nil {
@@ -125,7 +125,7 @@ type CommentsCountCondition struct {
 	ContentId int64
 }
 
-// 获取总数
+// Count 获取总数
 func (con comments) Count(args CommentsCountCondition) (count int64, err error) {
 	qe := query.Use(ay.Db).Comments
 	do := qe.WithContext(con.ctx).Where(qe.Status.Eq(int(dal.StatusSuccess)))
@@ -138,12 +138,13 @@ func (con comments) Count(args CommentsCountCondition) (count int64, err error) 
 	return
 }
 
-// 通过文章id获取评论
-func (con comments) ListByContentId(contentId int64, opts ...OptionComments) (list []*model.Comments, err error) {
+// ListByContentId 通过文章id获取评论
+func (con comments) ListByContentId(contentId int64, opts ...OptionComments) (comments []*model.Comments, err error) {
 
 	qe := query.Use(ay.Db).Comments
+	var list []*model.Comments
 	if list, err = qe.WithContext(con.ctx).
-		Where(qe.ParentId.Eq(0), qe.Cid.Eq(contentId), qe.Status.Eq(int(dal.StatusSuccess))).
+		Where(qe.Cid.Eq(contentId), qe.Status.Eq(int(dal.StatusSuccess))).
 		Find(); err != nil {
 		return
 	}
@@ -154,10 +155,32 @@ func (con comments) ListByContentId(contentId int64, opts ...OptionComments) (li
 		}
 	}
 
+	//comments = con.tree(list)
+
+	comments = list
 	return
 }
 
-// 通过ids获取所有评论
+func (con comments) tree(list []*model.Comments) (comments []*model.Comments) {
+
+	refer := map[int64]*model.Comments{}
+	for k, v := range list {
+		refer[v.Coid] = list[k]
+	}
+	for _, v := range list {
+		sid := v.ParentId
+		if sid == 0 {
+			comments = append(comments, v)
+		} else {
+			if _, ok := refer[sid]; ok {
+				refer[sid].ChildComments = append(refer[sid].ChildComments, v)
+			}
+		}
+	}
+	return
+}
+
+// ListByParentIds 通过ids获取所有评论
 func (con comments) ListByParentIds(ids []int64, opts ...OptionComments) (list []*model.Comments, err error) {
 	qe := query.Use(ay.Db).Comments
 	if list, err = qe.WithContext(con.ctx).
@@ -174,7 +197,7 @@ func (con comments) ListByParentIds(ids []int64, opts ...OptionComments) (list [
 	return
 }
 
-// 通过ids获取所有评论
+// ListByIds 通过ids获取所有评论
 func (con comments) ListByIds(ids []int64, opts ...OptionComments) (list []*model.Comments, err error) {
 	qe := query.Use(ay.Db).Comments
 	if list, err = qe.WithContext(con.ctx).
@@ -191,7 +214,7 @@ func (con comments) ListByIds(ids []int64, opts ...OptionComments) (list []*mode
 	return
 }
 
-// 创建
+// Create 创建
 func (con comments) Create(args *model.Comments) (err error) {
 	if err = query.Use(ay.Db).Comments.WithContext(con.ctx).Create(args); err != nil {
 		return

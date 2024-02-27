@@ -118,10 +118,10 @@ func Set(r *gin.Engine) {
 			}
 			return
 		},
-		// 获取评论总数
+		// 获取评论
 		"ListContentComments": func(contentsId int64) []*model.Comments {
 			b := biz.NewBiz(context.Background())
-			list, err := b.Comments.ListByContentId(contentsId, b.Comments.WithSetChild())
+			list, err := b.Comments.ListByContentId(contentsId)
 			if err != nil {
 				ay.Logger.Error(err.Error())
 				return nil
