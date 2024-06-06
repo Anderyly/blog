@@ -196,7 +196,7 @@ func Set(r *gin.Engine) {
 		},
 		"GetAvatar": func(mail string) string {
 			h := lib.NewStr().Md5(mail)
-			return "http://www.gravatar.com/avatar/" + h + "?s=200&d=mm&r=g"
+			return controllers.SiteConf[model.ConfigAvatarUrlKey] + "/avatar/" + h + "?s=200&d=mm&r=g"
 		},
 		"GetTemplateConfig": func() (data map[string]interface{}) {
 			b := biz.NewBiz(context.Background())

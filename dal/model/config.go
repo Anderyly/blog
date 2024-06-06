@@ -15,6 +15,7 @@ const (
 	ConfigTemplateKey    = "template"      // 当前模板
 	ConfigCommentBan     = "comment_ban"   // 评论违禁词
 	ConfigCommentApply   = "comment_apply" // 评论审核
+	ConfigAvatarUrlKey   = "avatar_url"    // 头像源
 )
 
 type Config struct {
