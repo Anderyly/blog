@@ -62,7 +62,7 @@ func (con IndexController) Index(c *gin.Context) {
 		page = 1
 	}
 
-	c.HTML(http.StatusOK, "default/index", gin.H{
+	c.HTML(http.StatusOK, controllers.SiteConf["template"]+"/index", gin.H{
 		"siteConf": controllers.SiteConf,
 		"contents": list,
 		"pages":    utils.Page(page, int(count), 10),
@@ -86,7 +86,7 @@ func (con IndexController) Archives(c *gin.Context) {
 	}
 
 	if res == nil {
-		c.HTML(http.StatusOK, "default/404", gin.H{
+		c.HTML(http.StatusOK, controllers.SiteConf["template"]+"/404", gin.H{
 			"siteConf": controllers.SiteConf,
 		})
 		return
@@ -110,7 +110,7 @@ func (con IndexController) Archives(c *gin.Context) {
 	//})
 	//return
 
-	c.HTML(http.StatusOK, "default/archives", gin.H{
+	c.HTML(http.StatusOK, controllers.SiteConf["template"]+"/archives", gin.H{
 		"siteConf": controllers.SiteConf,
 		"contents": res,
 		"category": res.Category.Slug,
