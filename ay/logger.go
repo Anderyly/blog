@@ -19,6 +19,7 @@ func LoggerInit() {
 }
 
 func GetLogger(logLevel zapcore.Level) error {
+
 	config := zap.Config{
 		Encoding:    "json", // You can change this to "console" for human-readable output
 		Level:       zap.NewAtomicLevelAt(logLevel),

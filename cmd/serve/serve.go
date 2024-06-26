@@ -32,7 +32,11 @@ func Cmd() *cobra.Command {
 
 			// 加载gin
 			gin.SetMode(gin.DebugMode)
-			r = gin.Default()
+			r = gin.New()
+			//r.Use(
+			//	gin.LoggerWithWriter(gin.DefaultWriter, "/pathsNotToLog/"),
+			//	gin.Recovery(),
+			//)
 			middleware.Instance(r)
 			custom.Set(r)
 			r.LoadHTMLGlob("views/**/*")

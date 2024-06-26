@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
@@ -35,9 +36,12 @@ func GetDB() (err error) {
 
 	if Db, err = gorm.Open(option, &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{SingularTable: true},
+		Logger:         logger.Default,
 	}); err != nil {
 		return
 	}
+
+	Db.Logger = NewGormLogger()
 
 	return
 }
